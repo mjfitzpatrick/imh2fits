@@ -20,9 +20,11 @@ derived from the ".imh" image filename.
 
     where <opts> include:
         -d              print debug output
+        -h              this help message
+        -l              list rather than convert images
+        -s              force byte swapping
         -v              print verbose output
         -w              print FITS validation warning messages
-        -s              force byte swapping
 
         <files>         a list of ".imh" file to convert
 

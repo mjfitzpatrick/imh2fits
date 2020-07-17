@@ -19,9 +19,11 @@
 # 
 #     where <opts> include:
 #         -d              print debug output
+#         -h              this help message
+#         -l              list file rather than convert
+#         -s              force byte swapping
 #         -v              print verbose output
 #         -w              print FITS validation warning messages
-#         -s              force byte swapping
 # 
 #         <files>         a list of ".imh" file to convert
 # 
@@ -59,6 +61,7 @@ debug = False
 verbose = False
 force_swap = False
 warn = False
+list_only = False
 
 
 # OIF image file types
@@ -189,24 +192,28 @@ class OIFImage(object):
         hdu.header.add_history('New copy of ' + str(self.hdrfile.base))
 
         # Print some image statistics to see whether things look reasonable.
-        if verbose:
+        if verbose or list_only:
+            title = ''
+            if self.hdrfile.title != '':
+                title = self.hdrfile.title.decode('utf-8')
             if self.pixfile.ndim == 1:
-                print('%20s[%d][%s]\tmean: %g  min: %g  max: %g' %
+                print('%20s[%d][%s]\t%s\n\t\tmean: %g  min: %g  max: %g' %
                       (path, self.pixfile.dims[0], 
-                      oiftypes[self.pixfile.pixtype],
+                      oiftypes[self.pixfile.pixtype], title,
                       np.mean(self.pixfile.pixels),
                       np.min(self.pixfile.pixels),
                       np.max(self.pixfile.pixels)))
             else:
-                print('%20s[%d,%d][%s]\tmean: %g  min: %g  max: %g' %
+                print('%20s[%d,%d][%s]\t%s\n\t\tmean: %g  min: %g  max: %g' %
                       (path, self.pixfile.dims[0],  self.pixfile.dims[1], 
-                      oiftypes[self.pixfile.pixtype],
+                      oiftypes[self.pixfile.pixtype], title,
                       np.mean(self.pixfile.pixels),
                       np.min(self.pixfile.pixels),
                       np.max(self.pixfile.pixels)))
 
         # Write out the FITS file.
-        hdu.writeto(path, overwrite=True)
+        if not list_only:
+            hdu.writeto(path, overwrite=True)
 
 
 class OIFHeader(OIFImage):
@@ -242,7 +249,7 @@ class OIFHeader(OIFImage):
             self.keywords = self.userarea.split(b'\n')[:-1]
             for i, k in enumerate(self.keywords):
                 self.keywords[i] = self.keywords[i].decode('utf-8')
-            self.title = self.hdr[732:888].replace(b'\x00', b'')
+            self.title = self.hdr[732:888].split(b'\0\0')[0].replace(b'\x00', b'')
             self.pixtype = struct.unpack(ifmt, self.hdr[16:20])[0]
 
             history = self.content[892:2048].replace(b'\x00', b'')
@@ -405,9 +412,11 @@ Usage:
 
    where <opts> include:
        -d              print debug output
+       -h              this help message
+       -l              list file rather than convert
+       -s              force byte swapping
        -v              print verbose output
        -w              print FITS validation warning messages
-       -s              force byte swapping
 
        <files>         a list of ".imh" file to convert
 
@@ -439,6 +448,8 @@ if __name__ == '__main__':
             sys.exit()
         elif arg in ("-d", "--debug"):          # debug output
             debug = True
+        elif arg in ("-l", "--list"):           # list rather than convert
+            list_only = True
         elif arg in ("-v", "--verbose"):        # verbose output
             verbose = True
         elif arg in ("-s", "--swap"):           # force byte-swap
