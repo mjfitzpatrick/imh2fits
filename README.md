@@ -53,7 +53,7 @@ or the image pixels (in a ".pix" file).  The original V1 files were written
 in native byte order and used SPP strings (basically short integers) and
 are typically now byte-swapped relative to x86-based machines.  The later
 V2 files were written in a fixed big-endian format using packed strings
-an contain a flag to indicate whether the pixels are swapped relative to the
+and contain a flag to indicate whether the pixels are swapped relative to the
 big-endian format. 
 
 The IMH2FITS task will unpack the header/pixels from either V1 or V2 files
