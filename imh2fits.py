@@ -155,7 +155,7 @@ class OIFImage(object):
         else:
             hdu.data = self.pixfile.pixels.T
 
-        # Set the PHU header keywords from the OID user area.
+        # Set the PHU header keywords from the OIF user area.
         for key in self.hdrfile.keywords:
             if key.strip() == '':
                 continue
