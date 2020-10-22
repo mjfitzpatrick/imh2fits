@@ -172,18 +172,19 @@ class OIFImage(object):
                 c = ''
 
             if debug:
-                print('k: %s  v: %s  c: %s' % (str(k), str(v), str(c)))
+                print('k :%s:  v :%s:  c :%s:' % (str(k), str(v), str(c)))
 
             # Determine the keyword value type so we don't write everything
             # as a string.
             if key[:7] not in ['HISTORY', 'COMMENT']:
-                t = ast.literal_eval(v)
-                if type(t) == int:
-                    v = int(v)
-                elif type(t) == float:
-                    v = float(v)
-                else:
-                    v = v.strip("'")
+                if v.lower() not in ['t','f','true','false']:
+                    t = ast.literal_eval(v)
+                    if type(t) == int:
+                        v = int(v)
+                    elif type(t) == float:
+                        v = float(v)
+                    else:
+                        v = v.strip("'")
 
             hdu.header[k] = (v, c)
 
