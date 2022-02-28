@@ -52,7 +52,7 @@ import numpy as np
 import astropy.io.fits as fits
 from astropy.io.fits.verify import VerifyWarning
 
-__author__ = 'Mike Fitzpatrick <fitz@noao.edu>'
+__author__ = 'Mike Fitzpatrick <mjfitzpatrick@gmail.com>'
 __version__ = '2020-07-15'      # yyyy-mm-dd
 
 
